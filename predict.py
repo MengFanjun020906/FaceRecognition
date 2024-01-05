@@ -9,7 +9,8 @@ import cv2
 import numpy as np
 
 from retinaface import Retinaface
-
+import extract_name
+import compare
 
 '''
 
@@ -101,7 +102,13 @@ if __name__ == "__main__":
                     
             fps  = ( fps + (1./(time.time()-t1)) ) / 2
             print("fps= %.2f"%(fps))
-            print()
+            #对摄像头识别的人脸和数据库中的人脸进行对比
+            #print("Start")
+            extract_name.main()
+            #print(extract_name.name_array)
+            result=compare.compare_variable_with_array(retinaface.matches_name,extract_name.name_array)
+            print(result)
+            #对比结束
             frame = cv2.putText(frame, "fps= %.2f"%(fps), (0, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
             
             cv2.imshow("video",frame)
@@ -111,6 +118,8 @@ if __name__ == "__main__":
 
             if c==27:
                 capture.release()
+
+
                 break
         print("Video Detection Done!")
         capture.release()
@@ -143,3 +152,6 @@ if __name__ == "__main__":
                 cv2.imwrite(os.path.join(dir_save_path, img_name), r_image)
     else:
         raise AssertionError("Please specify the correct mode: 'predict', 'video', 'fps' or 'dir_predict'.")
+
+
+

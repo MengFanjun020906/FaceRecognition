@@ -38,6 +38,7 @@ def cv2ImgAddText(img, label, left, top, textColor=(255, 255, 255)):
 #   一定要注意重新编码人脸。
 #--------------------------------------#
 class Retinaface(object):
+
     _defaults = {
         #----------------------------------------------------------------------#
         #   retinaface训练完的权值路径
@@ -83,13 +84,15 @@ class Retinaface(object):
         #----------------------------------------------------------------------#
         #   facenet所使用的人脸距离门限
         #----------------------------------------------------------------------#
-        "facenet_threhold"      : 0.75,
+        "facenet_threhold"      : 0.8,
 
         #--------------------------------#
         #   是否使用Cuda
         #   没有GPU可以设置成False
         #--------------------------------#
         "cuda"                  : True
+
+
     }
 
     @classmethod
@@ -103,6 +106,7 @@ class Retinaface(object):
     #   初始化Retinaface
     #---------------------------------------------------#
     def __init__(self, encoding=0, **kwargs):
+        self.matches_name = None
         self.__dict__.update(self._defaults)
         for name, value in kwargs.items():
             setattr(self, name, value)
@@ -274,6 +278,7 @@ class Retinaface(object):
     #   检测图片
     #---------------------------------------------------#
     def detect_image(self, image):
+
         #---------------------------------------------------#
         #   对输入图像进行一个备份，后面用于绘图
         #---------------------------------------------------#
@@ -413,14 +418,15 @@ class Retinaface(object):
             #   matches_name是保存读取的结果
             #-----------------------------------------------------#
 
-            matches_name=name
+            self.matches_name=name
+
             best_match_index = np.argmin(face_distances)
             if matches[best_match_index]: 
                 name = self.known_face_names[best_match_index]
-                matches_name = name
-                print(matches_name)
+                self.matches_name = name
+                print(self.matches_name)
             else:
-                print(matches_name)
+                 print(self.matches_name)
 
 
             face_names.append(name)
