@@ -1,14 +1,16 @@
+import cv2
 from PyQt5 import QtCore, QtGui, QtWidgets
-import sys
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLineEdit, QVBoxLayout, QMessageBox
 from PyQt5.QtMultimediaWidgets import QCameraViewfinder
 from PyQt5.QtMultimedia import *
 import untitled
-
+import sys
 class mywindow(QtWidgets.QMainWindow,untitled.Ui_MainWindow):
+
     def __init__(self):
         super(mywindow, self).__init__()
         self.setupUi(self)
-
+        self.saved_image = None
         # 创建摄像头实例
         self.camer = QCamera()
 
@@ -29,39 +31,64 @@ class mywindow(QtWidgets.QMainWindow,untitled.Ui_MainWindow):
         #self.camer.start()
 
         # 给保存并拍照按钮绑定函数
-        self.save_pic.clicked.connect(self.save_img)
+
+        self.btn_save.clicked.connect(self.save_img)
+
+        #点击拍照按钮，拍下照片
         self.save_pic.clicked.connect(self.current_show)
         self.click = 1
 
         # 给截图显示按钮绑定函数
         self.screenshot.clicked.connect(lambda: self.camer.start())
 
-    def save_img(self):
+    def save_img(self,img:QtGui.QImage):
+
+        text = self.text_edit.text()
 
         # 拍摄图片
-        self.capture.capture()
+
+        if self.saved_image is not None:
+            file_path = f"face_dataset/{text}.jpg"
+            # file_path += f"{text}.jpg"
+            self.saved_image.save(file_path)
+            try:
+                #img.save(f'face_dataset/{text}.jpg')
+                #cv2.imwrite(file_path, self.saved_image)
+                QMessageBox.information(self,"保存成功","图片已保存")
+            except Exception as e:
+                QMessageBox.critical(self,"保存失败",f"保存图片出现错误：{str(e)}")
+        else:
+            QMessageBox.warning(self,"无文本内容","文本框中无内容，无法保存")
         # 把拍摄的图像保存到缓存
-        self.capture.setCaptureDestination(QCameraImageCapture.CaptureDestination.CaptureToBuffer)
+        # self.capture.setCaptureDestination(QCameraImageCapture.CaptureDestination.CaptureToBuffer)
         # 如果成功保存到缓存，会自动发送一个imageCapture信号
-        self.capture.imageCaptured.connect(self.message_save)
-        self.click += 1
+        # self.capture.imageCaptured.connect(self.message_save)
+        # self.click += 1
 
     def message_save(self,id,img:QtGui.QImage):
         print(id)
         print(img)
-        img.save(f'{self.click-1}.png')
+        self.saved_image = img
+        img.save(f'{self.click-1}.jpg')
+
         self.capture.imageCaptured.disconnect(self.message_save)
 
     def current_show(self):
+
         # 拍摄图片
+
+
         self.capture.capture()
+
         # 把拍摄的图像保存到缓存
         self.capture.setCaptureDestination(QCameraImageCapture.CaptureDestination.CaptureToBuffer)
+
         # 如果成功保存到缓存，会自动发送一个imageCapture信号
         self.capture.imageCaptured.connect(self.message_show)
 
 
     def message_show(self, id, img: QtGui.QImage):
+        self.saved_image = img
         scalimg = img.scaled(self.label.width(),self.label.height(),QtCore.Qt.AspectRatioMode.KeepAspectRatio)
         self.label.setPixmap(QtGui.QPixmap.fromImage(scalimg))
         self.capture.imageCaptured.disconnect(self.message_show)

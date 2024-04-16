@@ -2,7 +2,8 @@ import os
 
 def extract_name(file_name):
     # 使用下划线分割文件名，并返回第一个部分
-    return file_name.split('_')[0]
+
+    return file_name.split('.')[0]
 
 def main():
     folder_path = 'face_dataset'  # 替换为你的文件夹路径
@@ -26,7 +27,8 @@ def main():
     # 将提取的名字保存到数组
     global name_array
     name_array = extracted_names
-    # print("Extracted Names Array:", name_array)
+    print("Extracted Names Array:", name_array)
 
 if __name__ == "__main__":
     main()
+
