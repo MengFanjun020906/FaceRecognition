@@ -27,7 +27,7 @@ def main():
     # 将提取的名字保存到数组
     global name_array
     name_array = extracted_names
-    print("Extracted Names Array:", name_array)
+    #print("Extracted Names Array:", name_array)
 
 if __name__ == "__main__":
     main()

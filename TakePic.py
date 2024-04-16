@@ -3,9 +3,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLineEdit, QVBoxLayout, QMessageBox
 from PyQt5.QtMultimediaWidgets import QCameraViewfinder
 from PyQt5.QtMultimedia import *
-import untitled
+import TakePicUi
 import sys
-class mywindow(QtWidgets.QMainWindow,untitled.Ui_MainWindow):
+class mywindow(QtWidgets.QMainWindow,TakePicUi.Ui_MainWindow):
 
     def __init__(self):
         super(mywindow, self).__init__()

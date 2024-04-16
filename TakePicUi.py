@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'untitled.ui'
+# Form implementation generated from reading ui file 'TakePicUi.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -40,18 +40,19 @@ class Ui_MainWindow(object):
         self.btn_save.setSizePolicy(sizePolicy)
         self.btn_save.setObjectName("btn_save")
         self.horizontalLayout.addWidget(self.btn_save)
-        self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.text_edit = QtWidgets.QLineEdit(self)
+        self.text_edit = QtWidgets.QLineEdit(self.centralwidget)
+
+        #self.text_edit = QtWidgets.Qtext_edit(self.centralwidget)
 
         layout.addWidget(self.text_edit)
 
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.lineEdit.sizePolicy().hasHeightForWidth())
-        self.lineEdit.setSizePolicy(sizePolicy)
-        self.lineEdit.setObjectName("lineEdit")
-        self.horizontalLayout.addWidget(self.lineEdit)
+        sizePolicy.setHeightForWidth(self.text_edit.sizePolicy().hasHeightForWidth())
+        self.text_edit.setSizePolicy(sizePolicy)
+        self.text_edit.setObjectName("text_edit")
+        self.horizontalLayout.addWidget(self.text_edit)
         self.screenshot = QtWidgets.QPushButton(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -102,7 +103,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.save_pic.setText(_translate("MainWindow", "拍照"))
         self.btn_save.setText(_translate("MainWindow", "保存"))
-        self.lineEdit.setPlaceholderText(_translate("MainWindow", "输入人脸信息"))
+        self.text_edit.setPlaceholderText(_translate("MainWindow", "输入人脸信息"))
         self.screenshot.setText(_translate("MainWindow", "打开摄像头"))
         self.label.setText(_translate("MainWindow", "拍照显示区域"))
 from PyQt5.QtMultimediaWidgets import QCameraViewfinder

@@ -6,7 +6,8 @@ import torch
 import torch.nn as nn
 from PIL import Image, ImageDraw, ImageFont
 from tqdm import tqdm
-
+import removejpg
+import extract_name
 from nets.facenet import Facenet
 from nets_retinaface.retinaface import RetinaFace
 from utils.anchors import Anchors
@@ -421,9 +422,13 @@ class Retinaface(object):
             self.matches_name=name
 
             best_match_index = np.argmin(face_distances)
-            if matches[best_match_index]: 
-                name = self.known_face_names[best_match_index]
+            if matches[best_match_index]:
+
+                name = removejpg.remove_extension(self.known_face_names[best_match_index])
+                # name = extract_name.main(name)
+
                 self.matches_name = name
+                self.matches_name = removejpg.remove_extension(self.matches_name)
                 print(self.matches_name)
             else:
                  print(self.matches_name)
