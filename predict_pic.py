@@ -1,6 +1,6 @@
 import cv2
 from retinaface import Retinaface
-from SelectPic import pick_pic
+
 
 def detect_pic(image_path):
     retinaface = Retinaface()

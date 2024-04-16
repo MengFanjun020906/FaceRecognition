@@ -1,12 +1,29 @@
 import time
 import cv2
 import numpy as np
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout
 from retinaface import Retinaface
 import extract_name
 import compare
-from SelectPic import pick_video
-from SelectPic import pick_pic
+import sys
 
+stop_signal = False
+class VideoDetectionApp(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        self.setWindowTitle('Video Detection')
+        self.setGeometry(100, 100, 300, 200)
+
+        layout = QVBoxLayout()
+
+        self.button = QPushButton('关闭', self)
+        self.button.clicked.connect(self.close)
+        layout.addWidget(self.button)
+
+        self.setLayout(layout)
 def detect_video(mode, video_path=0, video_save_path="", video_fps=25.0, dir_origin_path="img/",
                    dir_save_path="img_out/"):
     retinaface = Retinaface()
@@ -70,8 +87,9 @@ def detect_video(mode, video_path=0, video_save_path="", video_fps=25.0, dir_ori
         cv2.destroyAllWindows()
 
 
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    window = VideoDetectionApp()
+    window.show()
+    sys.exit(app.exec_())
 
-
-# if __name__ == "__main__":
-#     print(pick_video())
-#     detect_video(pick_video())
