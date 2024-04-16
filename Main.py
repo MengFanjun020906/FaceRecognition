@@ -19,3 +19,4 @@ if __name__ == '__main__':
     predict_video.detect_video(pick_video())
 
 
+

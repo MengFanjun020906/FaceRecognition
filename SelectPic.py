@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QFileDialog
 import os
 from retinaface import Retinaface
-
+import subprocess
 
 def pick_pic():
     app = QApplication(sys.argv)
@@ -54,7 +54,7 @@ class FilePicker(QWidget):
 
         self.pick_button2 = QPushButton('录入人脸', self)
         self.pick_button2.setGeometry(100, 200, 100, 30)
-        self.pick_button2.clicked.connect(QApplication.quit)
+        self.pick_button2.clicked.connect(self.TakePic)
 
 
 
@@ -82,7 +82,9 @@ class FilePicker(QWidget):
 
         retinaface.encode_face_dataset(image_paths, names)
 
+    def TakePic(self):
 
+        subprocess.Popen(['python','TakePic.py'])
 
 
 
