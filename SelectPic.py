@@ -37,7 +37,7 @@ class FilePicker(QWidget):
 
     def initUI(self):
         self.setWindowTitle('File Picker')
-        self.setGeometry(100, 100, 300, 200)
+        self.setGeometry(100, 100, 300, 300)
 
 
         self.button_video = QPushButton('检测视频', self)
@@ -81,6 +81,8 @@ class FilePicker(QWidget):
             names.append(name.split("_")[0])  # 根据下划线分割，只会取文件的名称而没有序号
 
         retinaface.encode_face_dataset(image_paths, names)
+
+
 
 
 
