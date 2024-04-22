@@ -33,7 +33,7 @@ class mywindow(QtWidgets.QMainWindow,TakePicUi.Ui_MainWindow):
         # 给截图显示按钮绑定函数
         self.screenshot.clicked.connect(lambda: self.camer.start())
 
-    def save_img(self,img:QtGui.QImage):
+    def save_img(self):
 
         text = self.text_edit.text()
 

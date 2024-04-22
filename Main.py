@@ -1,3 +1,4 @@
+#coding=utf-8
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QFileDialog
 import time
 import cv2
@@ -10,7 +11,6 @@ from SelectPic import pick_video
 from SelectPic import pick_pic
 from SelectPic import encode_pic
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QFileDialog
 from PyQt5 import QtCore,QtWidgets
 from PyQt5.QtWidgets import *
 import predict_pic
