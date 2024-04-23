@@ -17,6 +17,7 @@ import predict_pic
 import predict_video
 from LoginWindow import Ui_loginWindow
 from SelectPic import FilePicker
+import serial
 
 class LoginWindow(QMainWindow,Ui_loginWindow):
     def __init__(self):

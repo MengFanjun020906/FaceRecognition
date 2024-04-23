@@ -429,9 +429,9 @@ class Retinaface(object):
 
                 self.matches_name = name
                 self.matches_name = removejpg.remove_extension(self.matches_name)
-                print(self.matches_name)
+                #print(self.matches_name)
             else:
-                 print(self.matches_name)
+                 print()
 
 
             face_names.append(name)

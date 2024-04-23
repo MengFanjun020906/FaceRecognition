@@ -6,8 +6,11 @@ from retinaface import Retinaface
 import extract_name
 import compare
 import sys
-
+import serial
+import subprocess
+import time
 stop_signal = False
+
 class VideoDetectionApp(QWidget):
     def __init__(self):
         super().__init__()
@@ -65,10 +68,21 @@ def detect_video(mode, video_path=0, video_save_path="", video_fps=25.0, dir_ori
             frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
             fps = (fps + (1. / (time.time() - t1))) / 2
-            print("fps= %.2f" % (fps))
+            #print("fps= %.2f" % (fps))
             extract_name.main()
             result = compare.compare_variable_with_array(retinaface.matches_name, extract_name.name_array)
+
             print(result)
+
+            if result == 1:
+                subprocess.Popen(['python', 'transferdata.py'])
+
+            else:
+                print("未启动舵机")
+                #write_len = ser.write("1".encode('utf-8'))
+                #subprocess.Popen(['python', 'transferdata.py'])
+            #write_len = ser.write(str(result).encode('utf-8'))
+
             frame = cv2.putText(frame, "fps= %.2f" % (fps), (0, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
             cv2.imshow("video", frame)
@@ -86,10 +100,4 @@ def detect_video(mode, video_path=0, video_save_path="", video_fps=25.0, dir_ori
             out.release()
         cv2.destroyAllWindows()
 
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    window = VideoDetectionApp()
-    window.show()
-    sys.exit(app.exec_())
 
