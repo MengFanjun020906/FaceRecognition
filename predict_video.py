@@ -83,7 +83,7 @@ def detect_video(mode, video_path=0, video_save_path="", video_fps=25.0, dir_ori
                 #subprocess.Popen(['python', 'transferdata.py'])
             #write_len = ser.write(str(result).encode('utf-8'))
 
-            frame = cv2.putText(frame, "fps= %.2f" % (fps), (0, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+            #frame = cv2.putText(frame, "fps= %.2f" % (fps), (0, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
             cv2.imshow("video", frame)
             c = cv2.waitKey(1) & 0xff

@@ -6,7 +6,7 @@ const int servoPin = D5;
 Servo servo;
 
 // 串口通信参数
-const int baudRate = 9600;
+const int baudRate = 115200;
 
 // 定义舵机初始角度和目标角度
 const int initialAngle = 90;
@@ -30,7 +30,7 @@ void setup() {
 
 void loop() {
   // 检查串口是否有数据可用
-
+    Serial.printf("waiting......\n");
     // 读取串口输入
     int command = Serial.parseInt();
     servo.write(90);

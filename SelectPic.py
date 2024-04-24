@@ -110,7 +110,7 @@ class FilePicker(QWidget):
 
     def TakePic(self):
 
-        subprocess.Popen(['python','TakePic.py'])
+        subprocess.Popen(['python','test.py'])
 
     # def showOutput(self):
     #     self.output_text_edit.appendPlainText("")
