@@ -162,21 +162,9 @@ class Retinaface(object):
     def encode_face_dataset(self, image_paths, names):
         face_encodings = []
         for index, path in enumerate(tqdm(image_paths)):
-            #---------------------------------------------------#
-            #   打开人脸图片
-            #---------------------------------------------------#
             image       = np.array(Image.open(path), np.float32)
-            #---------------------------------------------------#
-            #   对输入图像进行一个备份
-            #---------------------------------------------------#
             old_image   = image.copy()
-            #---------------------------------------------------#
-            #   计算输入图片的高和宽
-            #---------------------------------------------------#
             im_height, im_width, _ = np.shape(image)
-            #---------------------------------------------------#
-            #   计算scale，用于将获得的预测框转换成原图的高宽
-            #---------------------------------------------------#
             scale = [
                 np.shape(image)[1], np.shape(image)[0], np.shape(image)[1], np.shape(image)[0]
             ]
@@ -190,91 +178,49 @@ class Retinaface(object):
                 anchors = self.anchors
             else:
                 anchors = Anchors(self.cfg, image_size=(im_height, im_width)).get_anchors()
-
-            #---------------------------------------------------#
-            #   将处理完的图片传入Retinaface网络当中进行预测
-            #---------------------------------------------------#
             with torch.no_grad():
-                #-----------------------------------------------------------#
-                #   图片预处理，归一化。
-                #-----------------------------------------------------------#
                 image = torch.from_numpy(preprocess_input(image).transpose(2, 0, 1)).unsqueeze(0).type(torch.FloatTensor)
-
                 if self.cuda:
                     image               = image.cuda()
                     anchors             = anchors.cuda()
-
                 loc, conf, landms = self.net(image)
-                #-----------------------------------------------------------#
-                #   对预测框进行解码
-                #-----------------------------------------------------------#
                 boxes   = decode(loc.data.squeeze(0), anchors, self.cfg['variance'])
-                #-----------------------------------------------------------#
-                #   获得预测结果的置信度
-                #-----------------------------------------------------------#
                 conf    = conf.data.squeeze(0)[:, 1:2]
-                #-----------------------------------------------------------#
-                #   对人脸关键点进行解码
-                #-----------------------------------------------------------#
                 landms  = decode_landm(landms.data.squeeze(0), anchors, self.cfg['variance'])
-
-                #-----------------------------------------------------------#
-                #   对人脸检测结果进行堆叠
-                #-----------------------------------------------------------#
                 boxes_conf_landms = torch.cat([boxes, conf, landms], -1)
                 boxes_conf_landms = non_max_suppression(boxes_conf_landms, self.confidence)#非极大抑制
-
                 if len(boxes_conf_landms) <= 0:
                     print(names[index], "：未检测到人脸")
                     continue
-                #---------------------------------------------------------#
-                #   如果使用了letterbox_image的话，要把灰条的部分去除掉。
-                #---------------------------------------------------------#
                 if self.letterbox_image:
                     boxes_conf_landms = retinaface_correct_boxes(boxes_conf_landms, \
                         np.array([self.retinaface_input_shape[0], self.retinaface_input_shape[1]]), np.array([im_height, im_width]))
-
             boxes_conf_landms[:, :4] = boxes_conf_landms[:, :4] * scale
             boxes_conf_landms[:, 5:] = boxes_conf_landms[:, 5:] * scale_for_landmarks
-
-            #---------------------------------------------------#
-            #   选取最大的人脸框。
-            #---------------------------------------------------#
             best_face_location  = None
             biggest_area        = 0
             for result in boxes_conf_landms:
                 left, top, right, bottom = result[0:4]
-
                 w = right - left
                 h = bottom - top
                 if w * h > biggest_area:
                     biggest_area = w * h
                     best_face_location = result
 
-            #---------------------------------------------------#
-            #   截取图像
-            #---------------------------------------------------#
             crop_img = old_image[int(best_face_location[1]):int(best_face_location[3]), int(best_face_location[0]):int(best_face_location[2])]
             landmark = np.reshape(best_face_location[5:],(5,2)) - np.array([int(best_face_location[0]),int(best_face_location[1])])
             crop_img,_ = Alignment_1(crop_img,landmark)
-
             crop_img = np.array(letterbox_image(np.uint8(crop_img),(self.facenet_input_shape[1],self.facenet_input_shape[0])))/255
             crop_img = crop_img.transpose(2, 0, 1)
             crop_img = np.expand_dims(crop_img,0)
-            #---------------------------------------------------#
-            #   利用图像算取长度为128的特征向量
-            #---------------------------------------------------#
             with torch.no_grad():
                 crop_img = torch.from_numpy(crop_img).type(torch.FloatTensor)
                 if self.cuda:
                     crop_img = crop_img.cuda()
-
                 face_encoding = self.facenet(crop_img)[0].cpu().numpy()
                 face_encodings.append(face_encoding)
-
         np.save("model_data/{backbone}_face_encoding.npy".format(backbone=self.facenet_backbone),face_encodings)
         np.save("model_data/{backbone}_names.npy".format(backbone=self.facenet_backbone),names)
-
     #---------------------------------------------------#
     #   检测图片
     #---------------------------------------------------#

@@ -17,5 +17,4 @@ def detect_pic(image_path):
     cv2.imshow("after", r_image)
     cv2.waitKey(0)
 
-if __name__ == "__main__":
-    detect_pic(pick_pic())
+
