@@ -44,10 +44,7 @@ class LandmarkHead(nn.Module):
 
 class RetinaFace(nn.Module):
     def __init__(self, cfg = None, pre_train = False, phase = 'train'):
-        """
-        :param cfg:  Network related settings.
-        :param phase: train or test.
-        """
+
         super(RetinaFace,self).__init__()
         self.phase = phase
         backbone = None
@@ -75,6 +72,7 @@ class RetinaFace(nn.Module):
         ]
         out_channels = cfg['out_channel']
         self.fpn = FPN(in_channels_list,out_channels)
+
         self.ssh1 = SSH(out_channels, out_channels)
         self.ssh2 = SSH(out_channels, out_channels)
         self.ssh3 = SSH(out_channels, out_channels)
@@ -113,12 +111,12 @@ class RetinaFace(nn.Module):
         feature3 = self.ssh3(fpn[2])
         features = [feature1, feature2, feature3]
 
-        bbox_regressions = torch.cat([self.BboxHead[i](feature) for i, feature in enumerate(features)], dim=1)
-        classifications = torch.cat([self.ClassHead[i](feature) for i, feature in enumerate(features)], dim=1)
-        ldm_regressions = torch.cat([self.LandmarkHead[i](feature) for i, feature in enumerate(features)], dim=1)
+        bbox_regressions = torch.cat([self.BboxHead[i](feature) for i, feature in enumerate(features)], dim=1)#框
+        classifications = torch.cat([self.ClassHead[i](feature) for i, feature in enumerate(features)], dim=1)#类别
+        ldm_regressions = torch.cat([self.LandmarkHead[i](feature) for i, feature in enumerate(features)], dim=1)#关键点
 
         if self.phase == 'train':
-            output = (bbox_regressions, classifications, ldm_regressions)
+            output = (bbox_regressions, classifications, ldm_regressions)#loc,conf,landms
         else:
             output = (bbox_regressions, F.softmax(classifications, dim=-1), ldm_regressions)
         return output
